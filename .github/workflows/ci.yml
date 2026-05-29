@@ -1,0 +1,34 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  docker-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Получение исходного кода
+        uses: actions/checkout@v4
+
+      - name: Проверка файлов проекта
+        run: ls -la
+
+      - name: Сборка Docker-образа
+        run: docker compose build
+
+      - name: Запуск контейнеров
+        run: docker compose up -d
+
+      - name: Проверка запущенных контейнеров
+        run: docker ps
+
+      - name: Проверка ответа приложения
+        run: |
+          sleep 10
+          curl -f http://localhost:8000
+
+      - name: Остановка контейнеров
+        run: docker compose down
